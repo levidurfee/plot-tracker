@@ -6,13 +6,13 @@ compile:
 	GOOS=windows GOARCH=amd64 go build -o bin/pt-windows-amd64.exe main.go
 
 package:
-	mkdir -p ./pkg
-	tar -czf ./pkg/linux-arm64.tar.gz bin/pt-linux-arm64 config.yml LICENSE
-	tar -czf ./pkg/linux-amd64.tar.gz bin/pt-linux-amd64 config.yml LICENSE
-	tar -czf ./pkg/linux-windows.tar.gz bin/pt-windows-amd64.exe config.yml LICENSE
+	cp config.yml LICENSE ./bin
+
+	cd bin; tar -czf ./linux-arm64.tar.gz ./pt-linux-arm64 config.yml LICENSE
+	cd bin; tar -czf ./linux-amd64.tar.gz ./pt-linux-amd64 config.yml LICENSE
+	cd bin; tar -czf ./linux-windows.tar.gz ./pt-windows-amd64.exe config.yml LICENSE
 
 clean:
 	rm -Rf bin
-	rm -Rf pkg
 
 .PHONY: all compile package clean
