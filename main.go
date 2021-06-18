@@ -59,6 +59,8 @@ type LogData struct {
 	Eligible int `json:"eligible"`
 	Proofs   int `json:"proofs"`
 
+	Timestamp *time.Time
+
 	// @TODO - Add these fields
 	// AverageTime         float64 `json:"average_time"`
 	// AverageEligibleTime float64 `json:"average_eligible_time"`
