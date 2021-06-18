@@ -156,7 +156,9 @@ func main() {
 			logColumns := strings.Split(line.Text, LogColumn)
 
 			// The log files are fairly verbose so we split the part we want by
-			// spaces, it makes it easier to grab the information we want.
+			// spaces, it makes it easier to grab the information we want. We
+			// also need to convert the data from a `string` type to an `int`
+			// type.
 			//
 			// 0 plots were eligible for farming 2ce35966c9... Found 0 proofs. Time: 0.02905 s. Total 172 plots
 			data := strings.Split(logColumns[1], " ")
