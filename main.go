@@ -28,6 +28,11 @@ const (
 
 	// APIURL is where we send the data.
 	APIURL = "https://plot-tracker.app/api/v1/counter"
+
+	// ChiaDateFormat is how Chia formats the dates in the logs.
+	//
+	// https://golang.org/pkg/time/#pkg-constants
+	ChiaDateFormat = "2006-01-02T15:04:05.000"
 )
 
 // Config contains the fields we need for running the client.
