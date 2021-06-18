@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -108,12 +109,12 @@ func (ld LogData) Send() {
 	defer resp.Body.Close()
 
 	if resp.Status == "200 OK" {
-		log.Println("GREAT SUCCESS")
+		log.Println(resp.Status)
+		return
 	}
 
-	// log.Println(resp.Status)
-	// body, _ := ioutil.ReadAll(resp.Body)
-	// fmt.Println("response Body:", string(body))
+	body, _ := ioutil.ReadAll(resp.Body)
+	log.Println(resp.Status, string(body))
 }
 
 // GetTimestamp parses the left side of the log column to get the timestamp.
