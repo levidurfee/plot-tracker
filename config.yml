@@ -1,0 +1,3 @@
+log_file: "/home/CHANGE_ME/.chia/mainnet/log/debug.log"
+api_key: ""
+farm_key: ""
