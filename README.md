@@ -1,5 +1,7 @@
 # Plot Tracker
 
+[![CodeQL](https://github.com/levidurfee/plot-tracker/actions/workflows/codeql-analysis.yml/badge.svg?branch=main)](https://github.com/levidurfee/plot-tracker/actions/workflows/codeql-analysis.yml)
+
 ![screenshot of plot-tracker.app website dashboard](pt-website.png "Plot Tracker Dashboard")
 
 1. Create a [plot-tracker.app][1] account.
