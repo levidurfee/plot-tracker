@@ -3,6 +3,8 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -34,6 +36,9 @@ const (
 	// https://golang.org/pkg/time/#pkg-constants
 	ChiaDateFormat = "2006-01-02T15:04:05.000"
 )
+
+// Version is the version of the program
+var Version = "dev"
 
 // Config contains the fields we need for running the client.
 type Config struct {
@@ -108,12 +113,12 @@ func (ld LogData) Send() {
 	defer resp.Body.Close()
 
 	if resp.Status == "200 OK" {
-		log.Println("GREAT SUCCESS")
+		log.Println(resp.Status)
+		return
 	}
 
-	// log.Println(resp.Status)
-	// body, _ := ioutil.ReadAll(resp.Body)
-	// fmt.Println("response Body:", string(body))
+	body, _ := ioutil.ReadAll(resp.Body)
+	log.Println(resp.Status, string(body))
 }
 
 // GetTimestamp parses the left side of the log column to get the timestamp.
@@ -129,6 +134,8 @@ func GetTimestamp(line string) (time.Time, error) {
 }
 
 func main() {
+	fmt.Printf("Plot Tracker %s\n", Version)
+	fmt.Println("==============================")
 	log.Println("Starting...")
 
 	// https://github.com/nxadm/tail
