@@ -26,9 +26,11 @@ const (
 	// split the log line using the LogColumn.
 	LogColumn = "     "
 
+	// APIURL is where we send the data.
 	APIURL = "https://plot-tracker.app/api/v1/counter"
 )
 
+// Config contains the fields we need for running the client.
 type Config struct {
 	LogFile string `yaml:"log_file"`
 	APIKey  string `yaml:"api_key"`
@@ -64,6 +66,7 @@ type LogData struct {
 	// EligibilityHistory []bool `json:"eligibility_history"`
 }
 
+// Send sends the data to the API.
 func (ld LogData) Send() {
 	// Turn LogData into a JSON string
 	js, err := json.Marshal(&ld)
