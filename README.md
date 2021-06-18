@@ -1,5 +1,7 @@
 # Plot Tracker
 
+![screenshot of plot-tracker.app website dashboard](pt-website.png "Plot Tracker Dashboard")
+
 1. Create a [plot-tracker.app][1] account.
 1. Create a new **API Key**
 1. Create a new **Farm Key**
