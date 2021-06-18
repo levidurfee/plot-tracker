@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -35,6 +36,9 @@ const (
 	// https://golang.org/pkg/time/#pkg-constants
 	ChiaDateFormat = "2006-01-02T15:04:05.000"
 )
+
+// Version is the version of the program
+var Version = "dev"
 
 // Config contains the fields we need for running the client.
 type Config struct {
@@ -130,6 +134,8 @@ func GetTimestamp(line string) (time.Time, error) {
 }
 
 func main() {
+	fmt.Printf("Plot Tracker %s\n", Version)
+	fmt.Println("==============================")
 	log.Println("Starting...")
 
 	// https://github.com/nxadm/tail

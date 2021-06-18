@@ -1,9 +1,11 @@
+LDFLAGS=-ldflags "-X main.Version=`git describe --tags`"
+
 all: clean compile package
 
 compile:
-	GOOS=linux GOARCH=arm64 go build -o bin/pt-linux-arm64 main.go
-	GOOS=linux GOARCH=amd64 go build -o bin/pt-linux-amd64 main.go
-	GOOS=windows GOARCH=amd64 go build -o bin/pt-windows-amd64.exe main.go
+	GOOS=linux GOARCH=arm64 go build ${LDFLAGS} -o bin/pt-linux-arm64 main.go
+	GOOS=linux GOARCH=amd64 go build ${LDFLAGS} -o bin/pt-linux-amd64 main.go
+	GOOS=windows GOARCH=amd64 go build ${LDFLAGS} -o bin/pt-windows-amd64.exe main.go
 
 package:
 	cp config.yml LICENSE ./bin
