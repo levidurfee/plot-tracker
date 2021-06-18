@@ -1,4 +1,5 @@
-LDFLAGS=-ldflags "-X main.Version=`git describe --tags`"
+VERSION=`git describe --tags`
+LDFLAGS=-ldflags "-X main.Version=${VERSION}"
 
 all: clean compile package
 
@@ -10,9 +11,9 @@ compile:
 package:
 	cp config.yml LICENSE ./bin
 
-	cd bin; tar -czf ./linux-arm64.tar.gz ./pt-linux-arm64 config.yml LICENSE
-	cd bin; tar -czf ./linux-amd64.tar.gz ./pt-linux-amd64 config.yml LICENSE
-	cd bin; tar -czf ./linux-windows.tar.gz ./pt-windows-amd64.exe config.yml LICENSE
+	cd bin; tar -czf ./linux-arm64-${VERSION}.tar.gz ./pt-linux-arm64 LICENSE
+	cd bin; tar -czf ./linux-amd64-${VERSION}.tar.gz ./pt-linux-amd64 LICENSE
+	cd bin; tar -czf ./linux-windows-${VERSION}.tar.gz ./pt-windows-amd64.exe LICENSE
 
 clean:
 	rm -Rf bin
