@@ -116,6 +116,18 @@ func (ld LogData) Send() {
 	// fmt.Println("response Body:", string(body))
 }
 
+// GetTimestamp parses the left side of the log column to get the timestamp.
+//
+//     2021-06-18T08:28:35.589 harvester chia.harvester.harvester: INFO
+//
+// https://golang.org/pkg/time/#example_Parse
+func GetTimestamp(line string) (time.Time, error) {
+	pieces := strings.Split(line, " ")
+	textTimestamp := pieces[0]
+
+	return time.Parse(ChiaDateFormat, textTimestamp)
+}
+
 func main() {
 	log.Println("Starting...")
 
