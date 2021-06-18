@@ -26,9 +26,16 @@ const (
 	// split the log line using the LogColumn.
 	LogColumn = "     "
 
+	// APIURL is where we send the data.
 	APIURL = "https://plot-tracker.app/api/v1/counter"
+
+	// ChiaDateFormat is how Chia formats the dates in the logs.
+	//
+	// https://golang.org/pkg/time/#pkg-constants
+	ChiaDateFormat = "2006-01-02T15:04:05.000"
 )
 
+// Config contains the fields we need for running the client.
 type Config struct {
 	LogFile string `yaml:"log_file"`
 	APIKey  string `yaml:"api_key"`
@@ -57,6 +64,8 @@ type LogData struct {
 	Eligible int `json:"eligible"`
 	Proofs   int `json:"proofs"`
 
+	Timestamp *time.Time
+
 	// @TODO - Add these fields
 	// AverageTime         float64 `json:"average_time"`
 	// AverageEligibleTime float64 `json:"average_eligible_time"`
@@ -64,6 +73,7 @@ type LogData struct {
 	// EligibilityHistory []bool `json:"eligibility_history"`
 }
 
+// Send sends the data to the API.
 func (ld LogData) Send() {
 	// Turn LogData into a JSON string
 	js, err := json.Marshal(&ld)
@@ -106,6 +116,18 @@ func (ld LogData) Send() {
 	// fmt.Println("response Body:", string(body))
 }
 
+// GetTimestamp parses the left side of the log column to get the timestamp.
+//
+//     2021-06-18T08:28:35.589 harvester chia.harvester.harvester: INFO
+//
+// https://golang.org/pkg/time/#example_Parse
+func GetTimestamp(line string) (time.Time, error) {
+	pieces := strings.Split(line, " ")
+	textTimestamp := pieces[0]
+
+	return time.Parse(ChiaDateFormat, textTimestamp)
+}
+
 func main() {
 	log.Println("Starting...")
 
@@ -134,7 +156,9 @@ func main() {
 			logColumns := strings.Split(line.Text, LogColumn)
 
 			// The log files are fairly verbose so we split the part we want by
-			// spaces, it makes it easier to grab the information we want.
+			// spaces, it makes it easier to grab the information we want. We
+			// also need to convert the data from a `string` type to an `int`
+			// type.
 			//
 			// 0 plots were eligible for farming 2ce35966c9... Found 0 proofs. Time: 0.02905 s. Total 172 plots
 			data := strings.Split(logColumns[1], " ")
@@ -142,10 +166,21 @@ func main() {
 			eligible, _ := strconv.Atoi(data[0])
 			proofs, _ := strconv.Atoi(data[8])
 
+			// Get the timestamp of the log. Using the timestamp helps us from
+			// adding data sent more than once. When this program starts, the
+			// tail package reads a few of the last lines of the log file and
+			// sends those. So, in the API, we can check if the log entry is
+			// greater than or equal to the last timestamp sent from the client.
+			t, err := GetTimestamp(logColumns[0])
+			if err != nil {
+				log.Println(err)
+			}
+
 			logData := &LogData{
-				Plots:    plots,
-				Eligible: eligible,
-				Proofs:   proofs,
+				Plots:     plots,
+				Eligible:  eligible,
+				Proofs:    proofs,
+				Timestamp: &t,
 			}
 
 			// Create a new goroutine and send the data to the API.
