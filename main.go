@@ -164,10 +164,21 @@ func main() {
 			eligible, _ := strconv.Atoi(data[0])
 			proofs, _ := strconv.Atoi(data[8])
 
+			// Get the timestamp of the log. Using the timestamp helps us from
+			// adding data sent more than once. When this program starts, the
+			// tail package reads a few of the last lines of the log file and
+			// sends those. So, in the API, we can check if the log entry is
+			// greater than or equal to the last timestamp sent from the client.
+			t, err := GetTimestamp(logColumns[0])
+			if err != nil {
+				log.Println(err)
+			}
+
 			logData := &LogData{
-				Plots:    plots,
-				Eligible: eligible,
-				Proofs:   proofs,
+				Plots:     plots,
+				Eligible:  eligible,
+				Proofs:    proofs,
+				Timestamp: &t,
 			}
 
 			// Create a new goroutine and send the data to the API.
