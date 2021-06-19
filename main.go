@@ -65,9 +65,10 @@ func init() {
 
 // LogData is a type for keeping our log data together.
 type LogData struct {
-	Plots    int `json:"plots"`
-	Eligible int `json:"eligible"`
-	Proofs   int `json:"proofs"`
+	Plots     int     `json:"plots"`
+	Eligible  int     `json:"eligible"`
+	Proofs    int     `json:"proofs"`
+	TimeTaken float64 `json:"time_taken"`
 
 	Timestamp *time.Time `json:"timestamp"`
 
@@ -172,6 +173,7 @@ func main() {
 			plots, _ := strconv.Atoi(data[14])
 			eligible, _ := strconv.Atoi(data[0])
 			proofs, _ := strconv.Atoi(data[8])
+			timeTaken, _ := strconv.ParseFloat(data[11], 64)
 
 			// Get the timestamp of the log. Using the timestamp helps us from
 			// adding data sent more than once. When this program starts, the
@@ -188,6 +190,7 @@ func main() {
 				Eligible:  eligible,
 				Proofs:    proofs,
 				Timestamp: &t,
+				TimeTaken: timeTaken,
 			}
 
 			// Create a new goroutine and send the data to the API.
