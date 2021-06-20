@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -50,6 +51,7 @@ type Config struct {
 var cfg Config
 
 func LoadConfig(filename string) {
+	log.Printf("Loading config %s\n", filename)
 	f, err := os.Open(filename)
 	if err != nil {
 		panic(err)
@@ -140,6 +142,9 @@ func main() {
 	log.Println("Starting...")
 
 	// Optionally specify config file.
+	cfgFlag := flag.String("config", "config.yml", "location of the config file")
+	flag.Parse()
+	LoadConfig(*cfgFlag)
 
 	// https://github.com/nxadm/tail
 	// https://pkg.go.dev/github.com/nxadm/tail#Config
