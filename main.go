@@ -74,7 +74,7 @@ type LogData struct {
 
 	Timestamp *time.Time `json:"timestamp"`
 
-	// EligibilityHistory []bool `json:"eligibility_history"`
+	EligibilityHistory []bool `json:"eligibility_history"`
 }
 
 // Send sends the data to the API.
