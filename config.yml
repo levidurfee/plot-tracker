@@ -1,3 +1,3 @@
-log_file: "/home/CHANGE_ME/.chia/mainnet/log/debug.log"
-api_key: ""
-farm_key: ""
+log_file: "./debug.log"
+api_key: "3f98f422-10c9-4515-973c-3e303f54579a"
+farm_key: "06f12ecd-829d-474e-a4b6-01f65c9f7207"

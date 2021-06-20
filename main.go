@@ -79,12 +79,14 @@ type LogData struct {
 	EligibilityHistory []bool `json:"eligibility_history"`
 }
 
-func (ld *LogData) AddEligibility(eligible bool) {
-	ld.EligibilityHistory = append(ld.EligibilityHistory, eligible)
+func UpdateHistoryQueue(queue []bool, eligible bool) []bool {
+	queue = append(queue, eligible)
 
-	if len(ld.EligibilityHistory) > EligibilityHistorySize {
-		ld.EligibilityHistory = ld.EligibilityHistory[1:]
+	if len(queue) > EligibilityHistorySize {
+		queue = queue[1:]
 	}
+
+	return queue
 }
 
 // Send sends the data to the API.
@@ -168,6 +170,10 @@ func main() {
 		panic(err)
 	}
 
+	// We want to keep track of the latest signage points and know if they were
+	// eligible or not. It allows for easy visual grepping.
+	var EligibilityHistory []bool
+
 	// This is the main event loop. When a new line is written to the file, this
 	// loop will start an iteration.
 	for line := range tailer.Lines {
@@ -205,6 +211,19 @@ func main() {
 				Timestamp: &t,
 				TimeTaken: timeTaken,
 			}
+
+			// Set wasEligible to false by default
+			wasEligible := false
+
+			// Check if any plots were eligible
+			if eligible > 0 {
+				// If 1 or more plots were eligible, set wasEligible to true
+				wasEligible = true
+			}
+
+			// Add eligibility to queue
+			EligibilityHistory = UpdateHistoryQueue(EligibilityHistory, wasEligible)
+			logData.EligibilityHistory = EligibilityHistory
 
 			// Create a new goroutine and send the data to the API.
 			go logData.Send()
