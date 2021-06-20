@@ -36,6 +36,8 @@ const (
 	//
 	// https://golang.org/pkg/time/#pkg-constants
 	ChiaDateFormat = "2006-01-02T15:04:05.000"
+
+	EligibilityHistorySize = 100
 )
 
 // Version is the version of the program
@@ -75,6 +77,14 @@ type LogData struct {
 	Timestamp *time.Time `json:"timestamp"`
 
 	EligibilityHistory []bool `json:"eligibility_history"`
+}
+
+func (ld *LogData) AddEligibility(eligible bool) {
+	ld.EligibilityHistory = append(ld.EligibilityHistory, eligible)
+
+	if len(ld.EligibilityHistory) > EligibilityHistorySize {
+		ld.EligibilityHistory = ld.EligibilityHistory[1:]
+	}
 }
 
 // Send sends the data to the API.
