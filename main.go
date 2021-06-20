@@ -74,10 +74,6 @@ type LogData struct {
 
 	Timestamp *time.Time `json:"timestamp"`
 
-	// @TODO - Add these fields
-	// AverageTime         float64 `json:"average_time"`
-	// AverageEligibleTime float64 `json:"average_eligible_time"`
-
 	// EligibilityHistory []bool `json:"eligibility_history"`
 }
 
