@@ -36,6 +36,8 @@ const (
 	//
 	// https://golang.org/pkg/time/#pkg-constants
 	ChiaDateFormat = "2006-01-02T15:04:05.000"
+
+	EligibilityHistorySize = 100
 )
 
 // Version is the version of the program
@@ -74,11 +76,17 @@ type LogData struct {
 
 	Timestamp *time.Time `json:"timestamp"`
 
-	// @TODO - Add these fields
-	// AverageTime         float64 `json:"average_time"`
-	// AverageEligibleTime float64 `json:"average_eligible_time"`
+	EligibilityHistory []bool `json:"eligibility_history"`
+}
 
-	// EligibilityHistory []bool `json:"eligibility_history"`
+func UpdateHistoryQueue(queue []bool, eligible bool) []bool {
+	queue = append(queue, eligible)
+
+	if len(queue) > EligibilityHistorySize {
+		queue = queue[1:]
+	}
+
+	return queue
 }
 
 // Send sends the data to the API.
@@ -162,6 +170,10 @@ func main() {
 		panic(err)
 	}
 
+	// We want to keep track of the latest signage points and know if they were
+	// eligible or not. It allows for easy visual grepping.
+	var EligibilityHistory []bool
+
 	// This is the main event loop. When a new line is written to the file, this
 	// loop will start an iteration.
 	for line := range tailer.Lines {
@@ -199,6 +211,19 @@ func main() {
 				Timestamp: &t,
 				TimeTaken: timeTaken,
 			}
+
+			// Set wasEligible to false by default
+			wasEligible := false
+
+			// Check if any plots were eligible
+			if eligible > 0 {
+				// If 1 or more plots were eligible, set wasEligible to true
+				wasEligible = true
+			}
+
+			// Add eligibility to queue
+			EligibilityHistory = UpdateHistoryQueue(EligibilityHistory, wasEligible)
+			logData.EligibilityHistory = EligibilityHistory
 
 			// Create a new goroutine and send the data to the API.
 			go logData.Send()
