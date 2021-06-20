@@ -49,8 +49,8 @@ type Config struct {
 
 var cfg Config
 
-func init() {
-	f, err := os.Open("./config.yml")
+func LoadConfig(filename string) {
+	f, err := os.Open(filename)
 	if err != nil {
 		panic(err)
 	}
@@ -138,6 +138,8 @@ func main() {
 	fmt.Printf("Plot Tracker %s\n", Version)
 	fmt.Println("==============================")
 	log.Println("Starting...")
+
+	// Optionally specify config file.
 
 	// https://github.com/nxadm/tail
 	// https://pkg.go.dev/github.com/nxadm/tail#Config
