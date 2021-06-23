@@ -42,6 +42,15 @@ const (
 	// percentage. Since the history slice is boolean, we're only measuring if
 	// the farm had any eligible plots for that signage point.
 	EligibilityHistorySize = 100
+
+	// SleepBetweenIterations is a number in milliseconds that we want to sleep
+	// before moving on to the next iteration. The first time you run this app
+	// it reads your log file from the very beginning and sends all of those
+	// applicable logs to the server, while the server could handle it, we
+	// think it's better to pause for a moment before sending the next load.
+	// Right now, it's only sleeping 0.5 seconds. It will eventually catch up
+	// and then listen to live updates from the log file.
+	SleepBetweenIterations = 500
 )
 
 // Version is the version of the program
@@ -256,7 +265,7 @@ func main() {
 			go logData.Send()
 
 			// @TODO re-eval this.
-			time.Sleep(500 * time.Millisecond)
+			time.Sleep(SleepBetweenIterations * time.Millisecond)
 		}
 	}
 }
