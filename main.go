@@ -37,7 +37,20 @@ const (
 	// https://golang.org/pkg/time/#pkg-constants
 	ChiaDateFormat = "2006-01-02T15:04:05.000"
 
+	// EligibilityHistorySize is the max number of items in our History slice. I
+	// like using 100 because it looks nice in the UI and it's easy to show the
+	// percentage. Since the history slice is boolean, we're only measuring if
+	// the farm had any eligible plots for that signage point.
 	EligibilityHistorySize = 100
+
+	// SleepBetweenIterations is a number in milliseconds that we want to sleep
+	// before moving on to the next iteration. The first time you run this app
+	// it reads your log file from the very beginning and sends all of those
+	// applicable logs to the server, while the server could handle it, we
+	// think it's better to pause for a moment before sending the next load.
+	// Right now, it's only sleeping 0.5 seconds. It will eventually catch up
+	// and then listen to live updates from the log file.
+	SleepBetweenIterations = 500
 )
 
 // Version is the version of the program
@@ -52,6 +65,7 @@ type Config struct {
 
 var cfg Config
 
+// LoadConfig loads the YAML config from a file and sets the global Config var.
 func LoadConfig(filename string) {
 	log.Printf("Loading config %s\n", filename)
 	f, err := os.Open(filename)
@@ -79,6 +93,8 @@ type LogData struct {
 	EligibilityHistory []bool `json:"eligibility_history"`
 }
 
+// UpdateHistoryQueue uses the EligibilityHistorySize to keep the most recent
+// data in regards to if a farm had any eligible plots for a signage point.
 func UpdateHistoryQueue(queue []bool, eligible bool) []bool {
 	queue = append(queue, eligible)
 
@@ -97,9 +113,6 @@ func (ld LogData) Send() {
 		log.Println(err)
 	}
 
-	// fmt.Println(string(js))
-	// return
-
 	// Create a new HTTP Request
 	req, err := http.NewRequest("POST", APIURL, bytes.NewBuffer(js))
 	if err != nil {
@@ -108,6 +121,24 @@ func (ld LogData) Send() {
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-API-Key", cfg.APIKey)
 	req.Header.Set("X-Farmer-ID", cfg.FarmKey)
+
+	// Sending a custom User-Agent in the request headers. The User-Agent header
+	// is a characteristic string that lets servers and network peers identify
+	// the client making the request.
+	//
+	// User-Agent: <product> / <product-version> <comment>
+	//
+	// <product>
+	// A product identifier — its name or development codename.
+	//
+	// <product-version>
+	// Version number of the product.
+	//
+	// <comment>
+	// Zero or more comments containing more details; sub-product information, for example.
+	//
+	// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent
+	req.Header.Set("User-Agent", "PlotTracker/"+Version)
 
 	tr := &http.Transport{
 		MaxIdleConns:       10,
@@ -123,11 +154,16 @@ func (ld LogData) Send() {
 	}
 	defer resp.Body.Close()
 
+	// API returned a status that indicates everything went well, so we're done.
 	if resp.Status == "200 OK" {
 		log.Println(resp.Status)
 		return
 	}
 
+	// If we make it here, then we might have had a problem either on the client
+	// or server side. We print out the response status and body in the logs to
+	// help identify where the problem may be. Please report any issues to the
+	// repo: https://github.com/levidurfee/plot-tracker/issues
 	body, _ := ioutil.ReadAll(resp.Body)
 	log.Println(resp.Status, string(body))
 }
@@ -229,7 +265,7 @@ func main() {
 			go logData.Send()
 
 			// @TODO re-eval this.
-			time.Sleep(500 * time.Millisecond)
+			time.Sleep(SleepBetweenIterations * time.Millisecond)
 		}
 	}
 }

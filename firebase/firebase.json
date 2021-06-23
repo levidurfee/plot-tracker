@@ -1,0 +1,17 @@
+{
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [ {
+      "source": "/api/v1/counter",
+      "function": "counter"
+    }, {
+        "source": "**",
+        "destination": "/index.html"
+    } ]
+  }
+}
