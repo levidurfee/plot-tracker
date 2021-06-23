@@ -37,6 +37,10 @@ const (
 	// https://golang.org/pkg/time/#pkg-constants
 	ChiaDateFormat = "2006-01-02T15:04:05.000"
 
+	// EligibilityHistorySize is the max number of items in our History slice. I
+	// like using 100 because it looks nice in the UI and it's easy to show the
+	// percentage. Since the history slice is boolean, we're only measuring if
+	// the farm had any eligible plots for that signage point.
 	EligibilityHistorySize = 100
 )
 
@@ -52,6 +56,7 @@ type Config struct {
 
 var cfg Config
 
+// LoadConfig loads the YAML config from a file and sets the global Config var.
 func LoadConfig(filename string) {
 	log.Printf("Loading config %s\n", filename)
 	f, err := os.Open(filename)
@@ -79,6 +84,8 @@ type LogData struct {
 	EligibilityHistory []bool `json:"eligibility_history"`
 }
 
+// UpdateHistoryQueue uses the EligibilityHistorySize to keep the most recent
+// data in regards to if a farm had any eligible plots for a signage point.
 func UpdateHistoryQueue(queue []bool, eligible bool) []bool {
 	queue = append(queue, eligible)
 
@@ -138,11 +145,16 @@ func (ld LogData) Send() {
 	}
 	defer resp.Body.Close()
 
+	// API returned a status that indicates everything went well, so we're done.
 	if resp.Status == "200 OK" {
 		log.Println(resp.Status)
 		return
 	}
 
+	// If we make it here, then we might have had a problem either on the client
+	// or server side. We print out the response status and body in the logs to
+	// help identify where the problem may be. Please report any issues to the
+	// repo: https://github.com/levidurfee/plot-tracker/issues
 	body, _ := ioutil.ReadAll(resp.Body)
 	log.Println(resp.Status, string(body))
 }
