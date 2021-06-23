@@ -97,9 +97,6 @@ func (ld LogData) Send() {
 		log.Println(err)
 	}
 
-	// fmt.Println(string(js))
-	// return
-
 	// Create a new HTTP Request
 	req, err := http.NewRequest("POST", APIURL, bytes.NewBuffer(js))
 	if err != nil {
