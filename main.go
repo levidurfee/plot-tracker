@@ -108,6 +108,7 @@ func (ld LogData) Send() {
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-API-Key", cfg.APIKey)
 	req.Header.Set("X-Farmer-ID", cfg.FarmKey)
+	req.Header.Set("User-Agent", "PlotTracker/"+Version)
 
 	tr := &http.Transport{
 		MaxIdleConns:       10,
