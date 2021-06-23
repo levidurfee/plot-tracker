@@ -108,6 +108,23 @@ func (ld LogData) Send() {
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-API-Key", cfg.APIKey)
 	req.Header.Set("X-Farmer-ID", cfg.FarmKey)
+
+	// Sending a custom User-Agent in the request headers. The User-Agent header
+	// is a characteristic string that lets servers and network peers identify
+	// the client making the request.
+	//
+	// User-Agent: <product> / <product-version> <comment>
+	//
+	// <product>
+	// A product identifier — its name or development codename.
+	//
+	// <product-version>
+	// Version number of the product.
+	//
+	// <comment>
+	// Zero or more comments containing more details; sub-product information, for example.
+	//
+	// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent
 	req.Header.Set("User-Agent", "PlotTracker/"+Version)
 
 	tr := &http.Transport{
