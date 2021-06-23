@@ -1,0 +1,21 @@
+{
+  "name": "firebase",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "firebase-admin": "^9.9.0",
+    "parcel-bundler": "^1.12.5",
+    "preact": "^10.5.13",
+    "preact-router": "^3.2.1"
+  },
+  "devDependencies": {
+    "sass": "^1.35.1"
+  },
+  "scripts": {
+    "clean": "rm -Rf .cache public",
+    "build": "npm run clean; npx parcel build -d ./public ./src/index.html",
+    "deploy:hosting": "firebase deploy --only hosting",
+    "hosting": "npm run build; npm run deploy:hosting"
+  }
+}
