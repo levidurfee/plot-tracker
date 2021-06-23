@@ -10,7 +10,7 @@
     "@parcel/packager-raw-url": "2.0.0-nightly.1849",
     "@parcel/transformer-image": "2.0.0-beta.3.1",
     "@parcel/transformer-sass": "2.0.0-beta.3.1",
-    "parcel": "^2.0.0-beta.3.1",
+    "parcel": "^2.0.0-nightly.731",
     "sass": "^1.35.1"
   },
   "scripts": {
