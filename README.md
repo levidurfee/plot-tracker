@@ -2,7 +2,7 @@
 
 [![CodeQL](https://github.com/levidurfee/plot-tracker/actions/workflows/codeql-analysis.yml/badge.svg?branch=main)](https://github.com/levidurfee/plot-tracker/actions/workflows/codeql-analysis.yml)
 
-![screenshot of plot-tracker.app website dashboard](pt-website.png "Plot Tracker Dashboard")
+![screenshot of plot-tracker.app website dashboard](assets/pt-website.png "Plot Tracker Dashboard")
 
 1. Create a [plot-tracker.app][1] account.
 1. Create a new **API Key**
@@ -25,7 +25,7 @@ farm_key: "56789"
 
 ## Screenshot
 
-![screenshot of how to create keys on plot-tracker.app](plot-tracker.png "Plot Tracker")
+![screenshot of how to create keys on plot-tracker.app](assets/plot-tracker.png "Plot Tracker")
 
 [1]: https://plot-tracker.app/
 [2]: main.go
