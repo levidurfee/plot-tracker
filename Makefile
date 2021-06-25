@@ -9,7 +9,7 @@ compile:
 	GOOS=windows GOARCH=amd64 go build ${LDFLAGS} -o bin/pt-windows-amd64.exe main.go
 
 package:
-	cp config.yml LICENSE ./bin
+	cp LICENSE ./bin
 
 	cd bin; tar -czf ./linux-arm64-${VERSION}.tar.gz ./pt-linux-arm64 LICENSE
 	cd bin; tar -czf ./linux-amd64-${VERSION}.tar.gz ./pt-linux-amd64 LICENSE
