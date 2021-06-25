@@ -172,6 +172,7 @@ func (ld LogData) Send() {
 		// We wait to increase how long we sleep between iterations since we had
 		// an error POST'ing to the API.
 		SleepBetweenIterations += BackoffIncrease
+		log.Println("Backing off")
 		return
 	}
 	defer resp.Body.Close()
@@ -184,7 +185,7 @@ func (ld LogData) Send() {
 		// We want to reset the SleepBetweenIterations to the default value of
 		// DefaultSleepBetweenIrations since we had a successful POST.
 		SleepBetweenIterations = DefaultSleepBetweenIrations
-		log.Println("Backing off")
+
 		return
 	}
 
