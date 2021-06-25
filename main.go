@@ -150,7 +150,8 @@ func (ld LogData) Send() {
 	client := &http.Client{Transport: tr}
 	resp, err := client.Do(req)
 	if err != nil {
-		panic(err)
+		log.Println(err)
+		return
 	}
 	defer resp.Body.Close()
 
