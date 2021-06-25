@@ -43,15 +43,26 @@ const (
 	// the farm had any eligible plots for that signage point.
 	EligibilityHistorySize = 100
 
-	// SleepBetweenIterations is a number in milliseconds that we want to sleep
-	// before moving on to the next iteration. The first time you run this app
-	// it reads your log file from the very beginning and sends all of those
-	// applicable logs to the server, while the server could handle it, we
-	// think it's better to pause for a moment before sending the next load.
-	// Right now, it's only sleeping 0.5 seconds. It will eventually catch up
-	// and then listen to live updates from the log file.
-	SleepBetweenIterations = 500
+	DefaultSleepBetweenIrations time.Duration = 500
+
+	// MaxBackoff is the maximum amount of time we want to back off before we
+	// panic and decide that there is something wrong that can't be fixed by
+	// slowing down our HTTP POST requests.
+	MaxBackoff time.Duration = 2000
 )
+
+// SleepBetweenIterations is a number in milliseconds that we want to sleep
+// before moving on to the next iteration. The first time you run this app
+// it reads your log file from the very beginning and sends all of those
+// applicable logs to the server, while the server could handle it, we
+// think it's better to pause for a moment before sending the next load.
+// Right now, it's only sleeping 0.5 seconds. It will eventually catch up
+// and then listen to live updates from the log file.
+var SleepBetweenIterations time.Duration = DefaultSleepBetweenIrations
+
+// BackoffIncrease is the amount we add to SleepBetweenIterations each time a
+// HTTP POST fails.
+var BackoffIncrease time.Duration = 100
 
 // Version is the version of the program
 var Version = "dev"
@@ -151,6 +162,14 @@ func (ld LogData) Send() {
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Println(err)
+		if SleepBetweenIterations > MaxBackoff {
+			panic("Error sending data to API, tried backing off")
+		}
+
+		// Backoff
+		// We wait to increase how long we sleep between iterations since we had
+		// an error POST'ing to the API.
+		SleepBetweenIterations += BackoffIncrease
 		return
 	}
 	defer resp.Body.Close()
@@ -158,6 +177,11 @@ func (ld LogData) Send() {
 	// API returned a status that indicates everything went well, so we're done.
 	if resp.Status == "200 OK" {
 		log.Println(resp.Status)
+
+		// Backoff
+		// We want to reset the SleepBetweenIterations to the default value of
+		// DefaultSleepBetweenIrations since we had a successful POST.
+		SleepBetweenIterations = DefaultSleepBetweenIrations
 		return
 	}
 
