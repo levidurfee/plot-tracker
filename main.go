@@ -162,6 +162,8 @@ func (ld LogData) Send() {
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Println(err)
+
+		// Backoff
 		if SleepBetweenIterations > MaxBackoff {
 			panic("Error sending data to API, tried backing off")
 		}
