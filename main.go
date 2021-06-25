@@ -184,7 +184,10 @@ func (ld LogData) Send() {
 		// Backoff
 		// We want to reset the SleepBetweenIterations to the default value of
 		// DefaultSleepBetweenIrations since we had a successful POST.
-		SleepBetweenIterations = DefaultSleepBetweenIrations
+		if SleepBetweenIterations > DefaultSleepBetweenIrations {
+			SleepBetweenIterations = DefaultSleepBetweenIrations
+			log.Println("Stop backing off, reset sleep duration")
+		}
 
 		return
 	}
