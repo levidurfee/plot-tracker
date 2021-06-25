@@ -43,7 +43,7 @@ const (
 	// the farm had any eligible plots for that signage point.
 	EligibilityHistorySize = 100
 
-	DefaultSleepBetweenIrations time.Duration = 500
+	DefaultSleepBetweenIterations time.Duration = 500
 
 	// MaxBackoff is the maximum amount of time we want to back off before we
 	// panic and decide that there is something wrong that can't be fixed by
@@ -58,7 +58,7 @@ const (
 // think it's better to pause for a moment before sending the next load.
 // Right now, it's only sleeping 0.5 seconds. It will eventually catch up
 // and then listen to live updates from the log file.
-var SleepBetweenIterations time.Duration = DefaultSleepBetweenIrations
+var SleepBetweenIterations time.Duration = DefaultSleepBetweenIterations
 
 // BackoffIncrease is the amount we add to SleepBetweenIterations each time a
 // HTTP POST fails.
@@ -183,9 +183,9 @@ func (ld LogData) Send() {
 
 		// Backoff
 		// We want to reset the SleepBetweenIterations to the default value of
-		// DefaultSleepBetweenIrations since we had a successful POST.
-		if SleepBetweenIterations > DefaultSleepBetweenIrations {
-			SleepBetweenIterations = DefaultSleepBetweenIrations
+		// DefaultSleepBetweenIterations since we had a successful POST.
+		if SleepBetweenIterations > DefaultSleepBetweenIterations {
+			SleepBetweenIterations = DefaultSleepBetweenIterations
 			log.Println("Stop backing off, reset sleep duration")
 		}
 
