@@ -23,7 +23,7 @@ package:
 
 	cd bin; tar -czf ./plot-tracker-linux-arm64-${VERSION}.tar.gz ${DIR_LINUX_ARM64}-${VERSION}
 	cd bin; tar -czf ./plot-tracker-linux-amd64-${VERSION}.tar.gz ${DIR_LINUX_AMD64}-${VERSION}
-	cd bin; zip      ./plot-tracker-windows-${VERSION}.zip        ${DIR_WINDOWS}-${VERSION}
+	cd bin; zip -r   ./plot-tracker-windows-${VERSION}.zip        ${DIR_WINDOWS}-${VERSION}/
 
 clean:
 	rm -Rf bin
