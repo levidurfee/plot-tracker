@@ -1,0 +1,11 @@
+[Unit]
+Description=PlotTracker
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5s
+ExecStart=/usr/local/bin/plottracker -config=/etc/plot-tracker.yml
+
+[Install]
+WantedBy=multi-user.target
