@@ -101,12 +101,12 @@ type LogData struct {
 
 	Timestamp *time.Time `json:"timestamp"`
 
-	EligibilityHistory []bool `json:"eligibility_history"`
+	EligibilityHistory []int `json:"eligibility_history"`
 }
 
 // UpdateHistoryQueue uses the EligibilityHistorySize to keep the most recent
 // data in regards to if a farm had any eligible plots for a signage point.
-func UpdateHistoryQueue(queue []bool, eligible bool) []bool {
+func UpdateHistoryQueue(queue []int, eligible int) []int {
 	queue = append(queue, eligible)
 
 	if len(queue) > EligibilityHistorySize {
@@ -240,7 +240,7 @@ func main() {
 
 	// We want to keep track of the latest signage points and know if they were
 	// eligible or not. It allows for easy visual grepping.
-	var EligibilityHistory []bool
+	var EligibilityHistory []int
 
 	// This is the main event loop. When a new line is written to the file, this
 	// loop will start an iteration.
@@ -280,17 +280,8 @@ func main() {
 				TimeTaken: timeTaken,
 			}
 
-			// Set wasEligible to false by default
-			wasEligible := false
-
-			// Check if any plots were eligible
-			if eligible > 0 {
-				// If 1 or more plots were eligible, set wasEligible to true
-				wasEligible = true
-			}
-
 			// Add eligibility to queue
-			EligibilityHistory = UpdateHistoryQueue(EligibilityHistory, wasEligible)
+			EligibilityHistory = UpdateHistoryQueue(EligibilityHistory, eligible)
 			logData.EligibilityHistory = EligibilityHistory
 
 			// Create a new goroutine and send the data to the API.
