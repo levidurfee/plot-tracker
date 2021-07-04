@@ -39,8 +39,7 @@ const (
 
 	// EligibilityHistorySize is the max number of items in our History slice. I
 	// like using 100 because it looks nice in the UI and it's easy to show the
-	// percentage. Since the history slice is boolean, we're only measuring if
-	// the farm had any eligible plots for that signage point.
+	// percentage.
 	EligibilityHistorySize = 100
 
 	DefaultSleepBetweenIterations time.Duration = 500
